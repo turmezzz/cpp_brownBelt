@@ -57,27 +57,27 @@ include CMakeFiles/cpp_brownBelt.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/cpp_brownBelt.dir/flags.make
 
-CMakeFiles/cpp_brownBelt.dir/RAII_Booking/test.cpp.o: CMakeFiles/cpp_brownBelt.dir/flags.make
-CMakeFiles/cpp_brownBelt.dir/RAII_Booking/test.cpp.o: ../RAII_Booking/test.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/turmezzz/Yandex.Disk.localized/Programming/c++/cpp_brownBelt/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/cpp_brownBelt.dir/RAII_Booking/test.cpp.o"
-	/usr/local/bin/g++-8  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/cpp_brownBelt.dir/RAII_Booking/test.cpp.o -c /Users/turmezzz/Yandex.Disk.localized/Programming/c++/cpp_brownBelt/RAII_Booking/test.cpp
+CMakeFiles/cpp_brownBelt.dir/Functions_ebook/ebook.cpp.o: CMakeFiles/cpp_brownBelt.dir/flags.make
+CMakeFiles/cpp_brownBelt.dir/Functions_ebook/ebook.cpp.o: ../Functions_ebook/ebook.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/turmezzz/Yandex.Disk.localized/Programming/c++/cpp_brownBelt/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/cpp_brownBelt.dir/Functions_ebook/ebook.cpp.o"
+	/usr/local/bin/g++-8  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/cpp_brownBelt.dir/Functions_ebook/ebook.cpp.o -c /Users/turmezzz/Yandex.Disk.localized/Programming/c++/cpp_brownBelt/Functions_ebook/ebook.cpp
 
-CMakeFiles/cpp_brownBelt.dir/RAII_Booking/test.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/cpp_brownBelt.dir/RAII_Booking/test.cpp.i"
-	/usr/local/bin/g++-8 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/turmezzz/Yandex.Disk.localized/Programming/c++/cpp_brownBelt/RAII_Booking/test.cpp > CMakeFiles/cpp_brownBelt.dir/RAII_Booking/test.cpp.i
+CMakeFiles/cpp_brownBelt.dir/Functions_ebook/ebook.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/cpp_brownBelt.dir/Functions_ebook/ebook.cpp.i"
+	/usr/local/bin/g++-8 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/turmezzz/Yandex.Disk.localized/Programming/c++/cpp_brownBelt/Functions_ebook/ebook.cpp > CMakeFiles/cpp_brownBelt.dir/Functions_ebook/ebook.cpp.i
 
-CMakeFiles/cpp_brownBelt.dir/RAII_Booking/test.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/cpp_brownBelt.dir/RAII_Booking/test.cpp.s"
-	/usr/local/bin/g++-8 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/turmezzz/Yandex.Disk.localized/Programming/c++/cpp_brownBelt/RAII_Booking/test.cpp -o CMakeFiles/cpp_brownBelt.dir/RAII_Booking/test.cpp.s
+CMakeFiles/cpp_brownBelt.dir/Functions_ebook/ebook.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/cpp_brownBelt.dir/Functions_ebook/ebook.cpp.s"
+	/usr/local/bin/g++-8 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/turmezzz/Yandex.Disk.localized/Programming/c++/cpp_brownBelt/Functions_ebook/ebook.cpp -o CMakeFiles/cpp_brownBelt.dir/Functions_ebook/ebook.cpp.s
 
 # Object files for target cpp_brownBelt
 cpp_brownBelt_OBJECTS = \
-"CMakeFiles/cpp_brownBelt.dir/RAII_Booking/test.cpp.o"
+"CMakeFiles/cpp_brownBelt.dir/Functions_ebook/ebook.cpp.o"
 
 # External object files for target cpp_brownBelt
 cpp_brownBelt_EXTERNAL_OBJECTS =
 
-cpp_brownBelt: CMakeFiles/cpp_brownBelt.dir/RAII_Booking/test.cpp.o
+cpp_brownBelt: CMakeFiles/cpp_brownBelt.dir/Functions_ebook/ebook.cpp.o
 cpp_brownBelt: CMakeFiles/cpp_brownBelt.dir/build.make
 cpp_brownBelt: CMakeFiles/cpp_brownBelt.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/turmezzz/Yandex.Disk.localized/Programming/c++/cpp_brownBelt/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable cpp_brownBelt"
