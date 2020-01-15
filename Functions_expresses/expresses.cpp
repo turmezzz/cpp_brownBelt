@@ -49,17 +49,36 @@ public:
     }
 
     int Go(int start, int finish) {
-        if (start_2_finishes_.find(start) == start_2_finishes_.end()) {
-            return abs(finish - start);
-        }
-        auto it = start_2_finishes_.find(start)->second.lower_bound(finish);
-        int dist = abs(*it - finish);
-        if (it != start_2_finishes_.find(start)->second.begin())
         {
-            int left = abs(*(--it) - finish);
-            dist = min(left, dist);
+            auto it = start_2_finishes_.find(start);
+            if (it == start_2_finishes_.end() or it->second.empty()) {
+                return abs(finish - start);
+            }
         }
-        return min(dist, abs(finish - start));
+        {
+            set <int>& box = start_2_finishes_.find(start)->second;
+            auto it = box.lower_bound(finish);
+            if (it == box.end()) {
+                --it;
+            }
+            int dist = min(abs(finish - start) , abs(*it - finish));
+            if (it != start_2_finishes_.find(start)->second.begin())
+            {
+                int left = abs(*(--it) - finish);
+                dist = min(left, dist);
+            }
+            return dist;
+        }
+    }
+
+    void Show() const {
+        for (auto&[start, finishes] : start_2_finishes_) {
+            cout << start << "->";
+            for (int finish : finishes) {
+                cout << finish << ' ';
+            }
+            cout << endl;
+        }
     }
 };
 
@@ -71,9 +90,9 @@ double StressTest()
     RouteManager their;
 
     mt19937 gen(123);
-    uniform_int_distribution <int> dist(0, 100);
+    uniform_int_distribution <int> dist(0, 2);
 
-    int n = 100;
+    int n = 10;
     int start, finish;
     int my_ret, their_ret;
     stringstream log;
@@ -87,17 +106,23 @@ double StressTest()
             log << "ADD " << start << ' ' << finish << '\n';
         } else {
             // GO
-            my_ret = my.Go(start, finish);
-            their_ret = their.FindNearestFinish(start, finish);
-            log << "ADD " << start << ' ' << finish << '\n';
+//            my_ret = my.Go(start, finish);
+//            their_ret = their.FindNearestFinish(start, finish);
+            my_ret = my.Go(start, 20);
+            their_ret = their.FindNearestFinish(start, 20);
+            log << "GO " << start << ' ' << 20 << "<-> my: " << my_ret << ", their: " << their_ret << '\n';
 
             if (my_ret != their_ret) {
                 ++negative;
+                break;
             }
         }
     }
-    cerr << log.str() << endl;
-    return negative / n;
+    double failure_rate = negative / static_cast<double>(n);
+    if (failure_rate != 0) {
+        cerr << log.str() << endl;
+    }
+    return failure_rate;
 }
 
 void Solve() {
@@ -112,13 +137,28 @@ void Solve() {
         if (cmd[0] == 'A') {
             mng.Add(start, finish);
         } else if (cmd[0] == 'G') {
+//            mng.Show();
             cout << mng.Go(start, finish) << '\n';
         }
     }
 }
 
 int main() {
-//    Solve();
-    cout << StressTest() << endl;
+    Solve();
+//    cout << StressTest() << endl;
     return 0;
 }
+
+// problem was in my head.
+// I didn't know how to use lower_bound correctly
+
+/*
+7
+ADD 2 2
+ADD 1 0
+ADD 1 2
+ADD 1 1
+ADD 2 1
+ADD 1 1
+GO 1 20
+ */
