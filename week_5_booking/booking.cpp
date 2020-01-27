@@ -16,7 +16,7 @@ private:
     };
 
     unordered_map <string, deque <Booking>> hotel_2_bookings;
-    unordered_map <string, multiset <int>> hotel_2_client_ids;
+    unordered_map <string, unordered_map <int, int>> hotel_2_client_ids;
     unordered_map <string, int> hotel_2_room_count;
     int64_t last_query_time = 0;
 
@@ -42,7 +42,9 @@ private:
             auto& booking = hotel_bookings.front();
             {
                 auto it = hotel_client_ids.find(booking.client_id);
-                hotel_client_ids.erase(it);
+                if (--it->second == 0) {
+                    hotel_client_ids.erase(it);
+                }
             }
             {
                 hotel_room_count -= booking.room_count;
@@ -61,7 +63,7 @@ public:
         auto& hotel_room_count = hotel_2_room_count[hotel_name];
 
         hotel_bookings.emplace_back(Booking{time, client_id, room_count});
-        hotel_client_ids.insert(client_id);
+        ++hotel_client_ids[client_id];
         hotel_room_count += room_count;
     }
 
