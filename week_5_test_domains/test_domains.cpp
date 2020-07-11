@@ -6,6 +6,7 @@
 #include <string>
 #include <string_view>
 #include <vector>
+#include <sstream>
 
 using namespace std;
 
@@ -129,6 +130,15 @@ public:
         return ::IsSubdomain(candidate, **prev(it));
     }
 
+    void ShowDomains() const {
+        for (auto it : sorted_domains_) {
+            for (const auto& part : it->GetParts()) {
+                cout << part << ' ';
+            }
+            cout << endl;
+        }
+    }
+
 private:
     vector <const Domain*> sorted_domains_;
 
@@ -188,47 +198,130 @@ void PrintCheckResults(const vector <bool>& check_results, ostream& out_stream =
 }
 
 void TestSimple() {
-    {
-        // check domain split
-        string line = "ya.ru";
-        Domain domain(line);
-        ASSERT(*domain.GetParts().begin() != "");
-    }
-    {
-        // check GetReversedParts
-        string line = "maps.ya.ru";
-        Domain domain(line);
-        vector <string> data = {"maps", "ya", "ru"};
-        auto data_rit = data.rbegin();
-        for (auto part : domain.GetReversedParts()) {
-            ASSERT_EQUAL(*data_rit, part);
-            ++data_rit;
+    vector <Domain> banned_domains;
+    banned_domains.emplace_back("ya.ru");
+    banned_domains.emplace_back("maps.me");
+
+    vector <Domain> domains_to_check;
+    domains_to_check.emplace_back("m.ya.ru");
+    domains_to_check.emplace_back("google.com");
+    domains_to_check.emplace_back("moscow.maps.me");
+
+    auto results = CheckDomains(banned_domains, domains_to_check);
+    ASSERT_EQUAL(results, (vector <bool>{0, 1, 0}));
+}
+
+void TestEmptyString() {
+    Domain domain("ya.ru");
+    int cnt = 0;
+    for (const auto& it : domain.GetParts()) {
+        if (it == "ya") {
+            break;
         }
+        cnt++;
+    }
+    ASSERT_EQUAL(cnt, 0);
+}
+
+void TestGetReversedParts() {
+    Domain domain("www.ya.ru");
+    vector <string> data = {"ru", "ya", "www"};
+    auto box = domain.GetReversedParts();
+    auto beginIt = box.begin();
+    auto endId = box.end();
+    for (const auto& line : data) {
+        ASSERT_EQUAL(line, *beginIt);
+        ++beginIt;
+    }
+}
+
+void TestDomainIsSelfSubDomain() {
+    Domain domain("www.ya.ru");
+    ASSERT(not CheckDomains({domain}, {domain})[0]);
+}
+
+void TestSwapParams() {
+    Domain bad_domain("ya.ru");
+    Domain check_domain("maps.ya.ru");
+
+    ASSERT(not CheckDomains({bad_domain}, {check_domain})[0]);
+    ASSERT(CheckDomains({check_domain}, {bad_domain})[0]);
+}
+
+void TestAbsorption() {
+    {
+        vector <Domain> bad_domains;
+        for (const auto& line : {"ya.ru", "maps.ya.ru"}) {
+            bad_domains.emplace_back(line);
+        }
+        DomainChecker checker(bad_domains.begin(), bad_domains.end());
+        bad_domains[0] = Domain("google.com");
+        ASSERT_EQUAL(checker.IsSubdomain(Domain("maps.ya.ru")), false);
     }
     {
-        // check domain is sub domain for it self
-        string line = "maps.ya.ru";
-        Domain domain(line);
-        ASSERT(IsSubdomain(domain, domain));
+        vector <Domain> bad_domains;
+        for (const auto& line : {"maps.ya.ru", "ya.ru"}) {
+            bad_domains.emplace_back(line);
+        }
+        DomainChecker checker(bad_domains.begin(), bad_domains.end());
+        bad_domains[1] = Domain("google.com");
+        ASSERT_EQUAL(checker.IsSubdomain(Domain("maps.ya.ru")), false);
     }
-    {
-        // check domain is sub domain for it self
-        Domain domain("maps.ya.ru");
-        Domain sub_domain("ya.ru");
-        ASSERT(not IsSubdomain(sub_domain, domain));
+}
+
+void TestCorrectness() {
+    vector <Domain> bad_domains;
+    for (const auto& line : {"facebook.com", "google.com"}) {
+        bad_domains.emplace_back(line);
     }
-    {
-        // check domain checker
-        DomainChecker checker;
+    vector <Domain> check_domain;
+    for (const auto& line : {"main.facebook.com", "news.facebook.com", "twitter.com", "mail.google.com",
+                             "ya.ru"}) {
+        check_domain.emplace_back(line);
     }
+    ASSERT_EQUAL(CheckDomains(bad_domains, check_domain), (vector <bool>{0, 0, 1, 0, 1}));
+}
+
+void TestOutput() {
+    vector <Domain> bad_domains;
+    for (const auto& line : {"facebook.com", "google.com"}) {
+        bad_domains.emplace_back(line);
+    }
+    vector <Domain> check_domain;
+    for (const auto& line : {"main.facebook.com", "news.facebook.com", "twitter.com", "mail.google.com",
+                             "ya.ru"}) {
+        check_domain.emplace_back(line);
+    }
+    ostringstream sout;
+    PrintCheckResults(CheckDomains(bad_domains, check_domain), sout);
+    ASSERT_EQUAL(sout.str(), "Bad\nBad\nGood\nBad\nGood\n");
+}
+
+void TestReadDomains() {
+    istringstream sin("2\nfacebook.com\ngoogle.com");
+    const vector <Domain> banned_domains = ReadDomains(sin);
+    auto it = banned_domains[0].GetParts().begin();
+    ASSERT_EQUAL(*it, "facebook");
+    ++it;
+    ASSERT_EQUAL(*it, "com");
+    ASSERT_EQUAL(banned_domains.size(), 2);
 }
 
 int main() {
     TestRunner tr;
     RUN_TEST(tr, TestSimple);
+    RUN_TEST(tr, TestEmptyString);
+    RUN_TEST(tr, TestGetReversedParts);
+    RUN_TEST(tr, TestDomainIsSelfSubDomain);
+    RUN_TEST(tr, TestSwapParams);
+    RUN_TEST(tr, TestAbsorption);
+    RUN_TEST(tr, TestCorrectness);
+    RUN_TEST(tr, TestOutput);
+    RUN_TEST(tr, TestReadDomains);
 
-//    const vector <Domain> banned_domains = ReadDomains();
-//    const vector <Domain> domains_to_check = ReadDomains();
-//    PrintCheckResults(CheckDomains(banned_domains, domains_to_check));
+
+    const vector <Domain> banned_domains = ReadDomains();
+    const vector <Domain> domains_to_check = ReadDomains();
+    PrintCheckResults(CheckDomains(banned_domains, domains_to_check));
     return 0;
 }
